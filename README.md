@@ -1,1 +1,1 @@
-Petit projet de ToDoList pour apprendre le React
+Small project to learn React
