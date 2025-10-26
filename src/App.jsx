@@ -1,4 +1,5 @@
 import './App.css'
+import TodoItem from './TodoItem';
 import { useState, useEffect } from "react";
 
 function App() {
@@ -90,17 +91,12 @@ function App() {
       </div>
       <ul>
         {tasks.map((tache) => (
-          <li key={tache.id}>
-            <input
-              type="checkbox"
-              checked={tache.completee}
-              onChange={() => toogleTache(tache.id)}
-            />
-            <span className={tache.completee ? 'completed' : ''}>
-              {tache.texte}
-            </span>
-            <button onClick={() => supprimerTache(tache.id)}>Supprimer</button>
-          </li>
+          <TodoItem 
+            key={tache.id} 
+            tache={tache} 
+            onToggle={toogleTache} 
+            onDelete={supprimerTache} 
+          />
         ))}
       </ul>
       <p>Tâches restantes : {tachesRestantes}</p>
