@@ -1,11 +1,22 @@
 import './App.css'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
 
   const [value, setValue] = useState("");
 
-  const [tasks, setTasks] = useState([{id: 1, texte: "Ma tâche", completee: false}, {id: 2, texte: "Tache2", completee: false}]);
+  const [tasks, setTasks] = useState(() => {
+
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [];
+
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  const tachesRestantes = tasks.filter(tache => !tache.completee).length;
 
   const ajotuerTache = () => {
 
@@ -40,18 +51,42 @@ function App() {
 
   }
 
+  const toutSupprimer = () => {
+
+    setTasks([]);
+
+  }
+
+  const supprimerTachesComp = () => {
+
+    const nouvelleListe = tasks.filter(tache => !tache.completee);
+    setTasks(nouvelleListe);
+
+  }
+
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+    ajotuerTache();
+
+  }
+
   return (
     <div>
       <h1>Ma Todo-List</h1>
       
       <div>
-        <input 
-          type="text" 
-          placeholder="Ajouter une tâche..."
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <button onClick={ajotuerTache}>Ajouter</button>
+        <form onSubmit={handleSubmit}>
+          <input 
+            type="text" 
+            placeholder="Ajouter une tâche..."
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <button type="submit">Ajouter</button>
+          <button type="button" onClick={toutSupprimer}>Tout Supprimer</button>
+          <button type="button" onClick={supprimerTachesComp}>Supprimer les tâches complétées</button>
+        </form>
       </div>
       <ul>
         {tasks.map((tache) => (
@@ -68,6 +103,7 @@ function App() {
           </li>
         ))}
       </ul>
+      <p>Tâches restantes : {tachesRestantes}</p>
     </div>
   );
 }
